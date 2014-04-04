@@ -1183,7 +1183,7 @@ TEST(DBTest, HiddenValuesAreRemoved) {
     Random rnd(301);
     FillLevels("a", "z");
 
-    std::string big = RandomString(&rnd, 9924);
+    std::string big = RandomString(&rnd, 50000);
     Put("foo", big);
     Put("pastfoo", "v");
     const Snapshot* snapshot = db_->GetSnapshot();
@@ -1194,7 +1194,7 @@ TEST(DBTest, HiddenValuesAreRemoved) {
     ASSERT_GT(NumTableFilesAtLevel(0), 0);
 
     ASSERT_EQ(big, Get("foo", snapshot));
-    ASSERT_TRUE(Between(Size("", "pastfoo"), 9924, 60000));
+    ASSERT_TRUE(Between(Size("", "pastfoo"), 50000, 60000));
     db_->ReleaseSnapshot(snapshot);
     ASSERT_EQ(AllEntriesFor("foo"), "[ tiny, " + big + " ]");
     Slice x("x");

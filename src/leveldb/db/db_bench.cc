@@ -223,9 +223,9 @@ class Stats {
       if      (next_report_ < 1000)   next_report_ += 100;
       else if (next_report_ < 5000)   next_report_ += 500;
       else if (next_report_ < 10000)  next_report_ += 1000;
-      else if (next_report_ < 9924)  next_report_ += 5000;
+      else if (next_report_ < 50000)  next_report_ += 5000;
       else if (next_report_ < 100000) next_report_ += 10000;
-      else if (next_report_ < 500000) next_report_ += 9924;
+      else if (next_report_ < 500000) next_report_ += 50000;
       else                            next_report_ += 100000;
       fprintf(stderr, "... finished %d ops%30s\r", done_, "");
       fflush(stderr);

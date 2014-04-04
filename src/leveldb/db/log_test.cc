@@ -264,10 +264,10 @@ TEST(LogTest, ManyBlocks) {
 
 TEST(LogTest, Fragmentation) {
   Write("small");
-  Write(BigString("medium", 9924));
+  Write(BigString("medium", 50000));
   Write(BigString("large", 100000));
   ASSERT_EQ("small", Read());
-  ASSERT_EQ(BigString("medium", 9924), Read());
+  ASSERT_EQ(BigString("medium", 50000), Read());
   ASSERT_EQ(BigString("large", 100000), Read());
   ASSERT_EQ("EOF", Read());
 }
