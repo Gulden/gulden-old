@@ -1,0 +1,9 @@
+Building Guldencoin
+
+See doc/readme-qt.rst for instructions on building Guldencoin-Qt,
+the intended-for-end-users, nice-graphical-interface, reference
+implementation of Guldencoin.
+
+See doc/build-*.txt for instructions on building GuldenCoind,
+the intended-for-services, no-graphical-interface, reference
+implementation of Guldencoin.
