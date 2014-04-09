@@ -1204,13 +1204,13 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const CBloc
                 PastDifficultyAveragePrev = PastDifficultyAverage;
                 
                 if (LatestBlockTime < BlockReading->GetBlockTime()) {
-                	if (BlockReading->nHeight > 16000) LatestBlockTime = BlockReading->GetBlockTime();
+                	if (BlockReading->nHeight > 200) LatestBlockTime = BlockReading->GetBlockTime();
                 	}
                 PastRateActualSeconds                   = LatestBlockTime - BlockReading->GetBlockTime();
                 
                 PastRateTargetSeconds = TargetBlocksSpacingSeconds * PastBlocksMass;
                 PastRateAdjustmentRatio = double(1);
-                if (BlockReading->nHeight > 16000) {
+                if (BlockReading->nHeight > 200) {
                 	if (PastRateActualSeconds < 1) { PastRateActualSeconds = 1; }
                 		} else {
                     if (PastRateActualSeconds < 0) { PastRateActualSeconds = 0; }
@@ -1248,10 +1248,10 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const CBloc
 
 unsigned int static GetNextWorkRequired_V2(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
 {
-        static const int64 BlocksTargetSpacing = 2.5 * 60; // 150 seconds so 2.5 minutes!
+        static const int64 BlocksTargetSpacing = .5 * 60; // <-- fixing soon!
         unsigned int TimeDaySeconds = 60 * 60 * 24;
-        int64 PastSecondsMin = TimeDaySeconds * 0.25;
-        int64 PastSecondsMax = TimeDaySeconds * 7;
+        int64 PastSecondsMin = TimeDaySeconds * 0.01;
+        int64 PastSecondsMax = TimeDaySeconds * 0.14;
         uint64 PastBlocksMin = PastSecondsMin / BlocksTargetSpacing;
         uint64 PastBlocksMax = PastSecondsMax / BlocksTargetSpacing;
         
@@ -1265,7 +1265,7 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
                 if (pindexLast->nHeight+1 >= 5) { DiffMode = 2; }
         }
         else {
-                if (pindexLast->nHeight+1 >= 16000) { DiffMode = 2; } // KGW will kick in at block 10, so pretty much direct from start.
+                if (pindexLast->nHeight+1 >= 10) { DiffMode = 2; } // KGW will kick in at block 10, so pretty much direct from start.
         }
         
         if (DiffMode == 1) { return GetNextWorkRequired_V1(pindexLast, pblock); }
