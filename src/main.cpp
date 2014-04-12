@@ -1249,15 +1249,16 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const CBloc
 unsigned int static GetNextWorkRequired_V2(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
 {
         static const int64 BlocksTargetSpacing = .5 * 60; // <-- fixing soon!
+                        int64 NewBlocksTargetSpacing = .5*60;
+                        if (pindexLast->nHeight > 30000) NewBlocksTargetSpacing = 150; // 150 seconds
         unsigned int TimeDaySeconds = 60 * 60 * 24;
         int64 PastSecondsMin = TimeDaySeconds * 0.01;
         int64 PastSecondsMax = TimeDaySeconds * 0.14;
         uint64 PastBlocksMin = PastSecondsMin / BlocksTargetSpacing;
         uint64 PastBlocksMax = PastSecondsMax / BlocksTargetSpacing;
-        
-        return KimotoGravityWell(pindexLast, pblock, BlocksTargetSpacing, PastBlocksMin, PastBlocksMax);
-}
 
+        return KimotoGravityWell(pindexLast, pblock, NewBlocksTargetSpacing, PastBlocksMin, PastBlocksMax);
+}
 unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
 {
         int DiffMode = 1;
