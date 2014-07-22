@@ -1192,16 +1192,11 @@ void MapPort(bool)
 // The first name is used as information source for addrman.
 // The second name should resolve to a list of seed addresses.
 static const char *strMainNetDNSSeed[][2] = {
-    {"seed 1", "seed1.guldencoin.com"},
-    {"seed 2", "seed2.guldencoin.com"},
-    {"seed 3", "seed3.guldencoin.com"},
-    {"seed 4", "seed4.guldencoin.com"},
-    {"seed 5", "seed5.guldencoin.com"},
-    {"seed 6", "seed6.guldencoin.com"},
-    {"seed 7", "seed7.guldencoin.com"},
-    {"seed 8", "seed8.guldencoin.com"},
-    {"seed 9", "seed9.guldencoin.com"},
-    {"seed 10", "seed10.guldencoin.com"},
+    {"162.243.38.153", "seed-000.guldencoin.net"},
+    {"107.170.241.240", "seed-001.guldencoin.org"},
+    {"185.27.173.32", "seed-003.guldencoin.net"},
+    {"46.21.171.254", "seed-006.guldencoin.net"},
+    {"188.226.149.20", "seed-009.guldencoin.net"},
     {NULL, NULL}
 };
 
