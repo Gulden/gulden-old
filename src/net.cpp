@@ -1191,17 +1191,25 @@ void MapPort(bool)
 // Each pair gives a source name and a seed name.
 // The first name is used as information source for addrman.
 // The second name should resolve to a list of seed addresses.
+
+// To check the status of the seeds visit: https://seeds.guldencoin.com
+
 static const char *strMainNetDNSSeed[][2] = {
-    {"seed 1", "seed1.guldencoin.com"},
-    {"seed 2", "seed2.guldencoin.com"},
-    {"seed 3", "seed3.guldencoin.com"},
-    {"seed 4", "seed4.guldencoin.com"},
-    {"seed 5", "seed5.guldencoin.com"},
-    {"seed 6", "seed6.guldencoin.com"},
-    {"seed 7", "seed7.guldencoin.com"},
-    {"seed 8", "seed8.guldencoin.com"},
-    {"seed 9", "seed9.guldencoin.com"},
-    {"seed 10", "seed10.guldencoin.com"},
+    {"seed 0", "seed-000.guldencoin.net"},
+    {"seed 1", "seed-001.guldencoin.org"},
+    {"seed 2", "seed-002.guldencoin.nl"},
+    {"seed 3", "seed-003.guldencoin.net"},
+    {"seed 4", "seed-004.guldencoin.org"},
+    {"seed 5", "seed-005.guldencoin.nl"},
+    {"seed 6", "seed-006.guldencoin.net"},
+    {"seed 7", "seed-007.guldencoin.org"},
+    {"seed 8", "seed-008.guldencoin.nl"},
+    {"seed 9", "seed-009.guldencoin.net"},
+    {"seed 10", "seed-010.guldencoin.org"},
+    {"seed 11", "seed-011.guldencoin.nl"},
+    {"seed 12", "seed-012.guldencoin.net"},
+    {"seed 13", "seed-013.guldencoin.org"},
+    {"seed 14", "seed-014.guldencoin.nl"},
     {NULL, NULL}
 };
 
