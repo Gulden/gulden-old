@@ -40,6 +40,8 @@ WalletView::WalletView(QWidget *parent, BitcoinGUI *_gui):
 
     transactionsPage = new QWidget(this);
     QVBoxLayout *vbox = new QVBoxLayout();
+    //QFrame *mainframe = new QFrame();
+
     QHBoxLayout *hbox_buttons = new QHBoxLayout();
     transactionView = new TransactionView(this);
     vbox->addWidget(transactionView);
@@ -70,6 +72,9 @@ WalletView::WalletView(QWidget *parent, BitcoinGUI *_gui):
     // Clicking on a transaction on the overview page simply sends you to transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), this, SLOT(gotoHistoryPage()));
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
+
+    // when amount of coins are updated, inform the widgets
+    connect(overviewPage, SIGNAL(balancesUpdated(QString,QString,QString,bool)), gui, SLOT(setBalance(QString,QString,QString,bool)));
 
     // Double-clicking on a transaction on the transaction history page shows details
     connect(transactionView, SIGNAL(doubleClicked(QModelIndex)), transactionView, SLOT(showDetails()));

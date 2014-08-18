@@ -162,6 +162,8 @@ public slots:
     /** Show incoming transaction notification for new transactions. */
     void incomingTransaction(const QString& date, int unit, qint64 amount, const QString& type, const QString& address);
 
+    void setBalance(QString balance, QString unconfirmedBalance, QString immatureBalance, bool showImmature);
+
 private slots:
     /** Switch to overview (home) page */
     void gotoOverviewPage();

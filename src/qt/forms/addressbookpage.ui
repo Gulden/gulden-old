@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>760</width>
+    <width>994</width>
     <height>380</height>
    </rect>
   </property>
@@ -14,6 +14,9 @@
    <string>Address Book</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="topMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QLabel" name="labelExplanation">
      <property name="textFormat">

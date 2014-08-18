@@ -68,8 +68,17 @@ BitcoinGUI::BitcoinGUI(QWidget *parent) :
     rpcConsole(0),
     prevBlocks(0)
 {
+    resize(958, 500);
+    //setFixedSize(958, 550);
     restoreWindowGeometry();
     setWindowTitle(tr("Guldencoin") + " - " + tr("Wallet"));
+    qApp->setStyleSheet(
+                "#frame_coinamount { background:rgb(0,51,102); color: white; border: none; } " \
+                "#frame_coinamount QLabel { color: #ffffff; } " \
+                "#frame { } QToolBar QLabel { padding-top:15px;padding-bottom:10px;margin:0px; border: 0px;  border-color: yellow;} "
+    );
+
+
 #ifndef Q_OS_MAC
     QApplication::setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
@@ -77,8 +86,9 @@ BitcoinGUI::BitcoinGUI(QWidget *parent) :
     setUnifiedTitleAndToolBarOnMac(true);
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
-    // Create wallet frame and make it the central widget
+
     walletFrame = new WalletFrame(this);
+    walletFrame->setLineWidth(0);
     setCentralWidget(walletFrame);
 
     // Accept D&D of URIs
@@ -201,6 +211,7 @@ void BitcoinGUI::createActions()
     addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(addressBookAction);
 
+
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -289,12 +300,27 @@ void BitcoinGUI::createMenuBar()
 void BitcoinGUI::createToolBars()
 {
     QToolBar *toolbar = addToolBar(tr("Tabs toolbar"));
+    toolbar->setObjectName("toolbar");
+    toolbar->setMovable(false);
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    toolbar->setSizePolicy(sizePolicy);
+    toolbar->setStyleSheet("QToolBar { border: 0px; }");
+
     toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     toolbar->addAction(overviewAction);
     toolbar->addAction(sendCoinsAction);
     toolbar->addAction(receiveCoinsAction);
     toolbar->addAction(historyAction);
     toolbar->addAction(addressBookAction);
+    QWidget *separator = new QWidget(this);
+    separator->setObjectName("separator");
+    separator->setSizePolicy(QSizePolicy::Expanding,
+                             QSizePolicy::Fixed);
+    separator->setMinimumWidth(10);
+    separator->setMaximumWidth(99999999);
+
+    toolbar->addWidget(separator);
+    //toolbar->resize(10000,toolbar->height());
 }
 
 void BitcoinGUI::setClientModel(ClientModel *clientModel)
@@ -505,6 +531,12 @@ void BitcoinGUI::gotoSignMessageTab(QString addr)
 void BitcoinGUI::gotoVerifyMessageTab(QString addr)
 {
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
+}
+
+void BitcoinGUI::setBalance(QString balance, QString unconfirmedBalance, QString immatureBalance, bool showImmature)
+{
+    if (walletFrame)
+        walletFrame->setBalance(balance, unconfirmedBalance, immatureBalance, showImmature);
 }
 
 void BitcoinGUI::setNumConnections(int count)

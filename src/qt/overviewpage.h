@@ -33,6 +33,7 @@ public slots:
 
 signals:
     void transactionClicked(const QModelIndex &index);
+    void balancesUpdated(QString balance, QString unconfirmedBalance, QString immatureBalance, bool showImmature);
 
 private:
     Ui::OverviewPage *ui;
@@ -44,6 +45,7 @@ private:
 
     TxViewDelegate *txdelegate;
     TransactionFilterProxy *filter;
+
 
 private slots:
     void updateDisplayUnit();

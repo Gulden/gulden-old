@@ -9,12 +9,13 @@
 #include "transactionfilterproxy.h"
 #include "guiutil.h"
 #include "guiconstants.h"
+#include "walletframe.h"
 
 #include <QAbstractItemDelegate>
 #include <QPainter>
 
 #define DECORATION_SIZE 64
-#define NUM_ITEMS 3
+#define NUM_ITEMS 4
 
 class TxViewDelegate : public QAbstractItemDelegate
 {
@@ -28,6 +29,7 @@ public:
     inline void paint(QPainter *painter, const QStyleOptionViewItem &option,
                       const QModelIndex &index ) const
     {
+
         painter->save();
 
         QIcon icon = qvariant_cast<QIcon>(index.data(Qt::DecorationRole));
@@ -79,11 +81,12 @@ public:
         painter->drawText(amountRect, Qt::AlignLeft|Qt::AlignVCenter, GUIUtil::dateTimeStr(date));
 
         painter->restore();
+
     }
 
     inline QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
-        return QSize(DECORATION_SIZE, DECORATION_SIZE);
+        return QSize(DECORATION_SIZE, DECORATION_SIZE * 0.7);
     }
 
     int unit;
@@ -137,15 +140,20 @@ void OverviewPage::setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 
     currentBalance = balance;
     currentUnconfirmedBalance = unconfirmedBalance;
     currentImmatureBalance = immatureBalance;
-    ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balance));
-    ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, unconfirmedBalance));
-    ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, immatureBalance));
+//    ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balance));
+//    ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, unconfirmedBalance));
+//    ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, immatureBalance));
 
     // only show immature (newly mined) balance if it's non-zero, so as not to complicate things
     // for the non-mining users
     bool showImmature = immatureBalance != 0;
-    ui->labelImmature->setVisible(showImmature);
-    ui->labelImmatureText->setVisible(showImmature);
+//    ui->labelImmature->setVisible(showImmature);
+//    ui->labelImmatureText->setVisible(showImmature);
+    emit balancesUpdated(BitcoinUnits::formatWithUnit(unit, balance),
+                            BitcoinUnits::formatWithUnit(unit, unconfirmedBalance),
+                            BitcoinUnits::formatWithUnit(unit, immatureBalance),
+                            showImmature);
+
 }
 
 void OverviewPage::setClientModel(ClientModel *model)
@@ -167,10 +175,10 @@ void OverviewPage::setWalletModel(WalletModel *model)
         // Set up transaction list
         filter = new TransactionFilterProxy();
         filter->setSourceModel(model->getTransactionTableModel());
-        filter->setLimit(NUM_ITEMS);
+        filter->setLimit((int)((ui->listTransactions->height() / 64)-1));
         filter->setDynamicSortFilter(true);
         filter->setSortRole(Qt::EditRole);
-        filter->sort(TransactionTableModel::Status, Qt::DescendingOrder);
+        filter->sort(TransactionTableModel::Date, Qt::DescendingOrder);
 
         ui->listTransactions->setModel(filter);
         ui->listTransactions->setModelColumn(TransactionTableModel::ToAddress);
@@ -206,8 +214,10 @@ void OverviewPage::updateAlerts(const QString &warnings)
     this->ui->labelAlerts->setText(warnings);
 }
 
+
 void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
 }
+

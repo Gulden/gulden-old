@@ -9,6 +9,20 @@
 
 #include <QFrame>
 
+#include <QtCore/QVariant>
+#include <QAction>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QFrame>
+#include <QGridLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QSpacerItem>
+#include <QWidget>
+
+
+
+
 class BitcoinGUI;
 class ClientModel;
 class WalletModel;
@@ -34,12 +48,27 @@ public:
 
     void showOutOfSyncWarning(bool fShow);
 
+    QLabel *labelImmatureText;
+    QLabel *labelUnconfirmed;
+    QLabel *labelBalance;
+    QLabel *labelImmature;
+
+
 private:
     BitcoinGUI *gui;
     ClientModel *clientModel;
     WalletStack *walletStack;
 
     WalletView *currentWalletView();
+
+    QFrame *frame_coinamount;
+    QGridLayout *gridLayout;
+    QLabel *lblIcon;
+    QSpacerItem *horizontalSpacer_3;
+    QSpacerItem *horizontalSpacer_4;
+    QLabel *label_6;
+    QLabel *label_7;
+    QSpacerItem *horizontalSpacer_5;
 
 public slots:
     /** Switch to overview (home) page */
@@ -72,6 +101,9 @@ public slots:
      @see WalletModel::EncryptionStatus
      */
     void setEncryptionStatus();
+
+    void setBalance(QString balance, QString unconfirmedBalance, QString immatureBalance, bool showImmature);
+
 };
 
 #endif // WALLETFRAME_H
