@@ -2861,11 +2861,12 @@ bool InitBlockIndex() {
     // Only add the genesis block if not reindexing (in which case we reuse the one already on disk)
     if (!fReindex) {
         // Genesis Block:
-        // CBlock(hash=12a765e31ffd4059bada, PoW=0000050c34a64b415b6b, ver=1, hashPrevBlock=00000000000000000000, hashMerkleRoot=97ddfbbae6, nTime=1317972665, nBits=1e0ffff0, nNonce=2084524493, vtx=1)
-        //   CTransaction(hash=97ddfbbae6, ver=1, vin.size=1, vout.size=1, nLockTime=0)
-        //     CTxIn(COutPoint(0000000000, -1), coinbase 04ffff001d0104404e592054696d65732030352f4f63742f32303131205374657665204a6f62732c204170706c65e280997320566973696f6e6172792c2044696573206174203536)
-        //     CTxOut(nValue=50.00000000, scriptPubKey=040184710fa689ad5023690c80f3a4)
-        //   vMerkleTree: 97ddfbbae6
+        // CBlock(hash=6c5d71a461b5bff6742bb62e5be53978b8dec5103ce52d1aaab8c6a251582f92, input=010000000000000000000000000000000000000000000000000000000000000000000000f8dcd6e372bf9002b89d6da07b0e6fb65b623751458de65a4497603ecb0bed4b00fc303cf0ff0f1e1f922100, PoW=00000d071c523ea3bed82015efff896a71cbaff5f22d3d32f4d7bfb6158ea13e, ver=1, hashPrevBlock=0000000000000000000000000000000000000000000000000000000000000000, hashMerkleRoot=4bed0bcb3e6097445ae68d455137625bb66f0e7ba06d9db80290bf72e3d6dcf8, nTime=1009843200, nBits=1e0ffff0, nNonce=2200095, vtx=1)
+        //   CTransaction(hash=4bed0bcb3e6097445ae68d455137625bb66f0e7ba06d9db80290bf72e3d6dcf8, ver=1, vin.size=1, vout.size=1, nLockTime=0)
+        //     CTxIn(COutPoint(0000000000000000000000000000000000000000000000000000000000000000, 4294967295), coinbase 04ffff001d0104324f6e206a616e756172692031737420746865204475746368206c6f73742074686572652062656c6f7665642047756c64656e)
+        //     CTxOut(error)
+        //   vMerkleTree: 4bed0bcb3e6097445ae68d455137625bb66f0e7ba06d9db80290bf72e3d6dcf8 
+
 
         // Genesis block
         const char* pszTimestamp = "On januari 1st the Dutch lost there beloved Gulden";
