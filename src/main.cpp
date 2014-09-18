@@ -3244,7 +3244,7 @@ bool static AlreadyHave(const CInv& inv)
 // The message start string is designed to be unlikely to occur in normal data.
 // The characters are rarely used upper ASCII, not valid as UTF-8, and produce
 // a large 4-byte int at any alignment.
-unsigned char pchMessageStart[4] = { 0xfb, 0xc0, 0xb6, 0xdb }; // Guldencoin: increase each by adding 2 to bitcoin's value.
+unsigned char pchMessageStart[4] = { 0xfc, 0xfe, 0xf7, 0xe0 }; // Guldencoin: NLG to hex +0xb0 for each char and last char 0xe0
 
 
 void static ProcessGetData(CNode* pfrom)
