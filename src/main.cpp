@@ -2901,10 +2901,10 @@ bool LoadBlockIndex()
 {
     if (fTestNet)
     {
-        pchMessageStart[0] = 0xfc;
-        pchMessageStart[1] = 0xc1;
-        pchMessageStart[2] = 0xb7;
-        pchMessageStart[3] = 0xdc;
+        pchMessageStart[0] = 0xfc; // 'N' + 0xb0
+        pchMessageStart[1] = 0xfe; // 'L' + 0xb0
+        pchMessageStart[2] = 0xf7; // 'G' + 0xb0
+        pchMessageStart[3] = 0x00; // 0x00
         hashGenesisBlock = uint256("0xf1fe2c7e57300c65ed0e4905ca5f74192a3e1feea209c4fcc2c60df024121a05");
     }
 
@@ -3244,7 +3244,7 @@ bool static AlreadyHave(const CInv& inv)
 // The message start string is designed to be unlikely to occur in normal data.
 // The characters are rarely used upper ASCII, not valid as UTF-8, and produce
 // a large 4-byte int at any alignment.
-unsigned char pchMessageStart[4] = { 0xfc, 0xfe, 0xf7, 0xe0 }; // Guldencoin: NLG to hex +0xb0 for each char and last char 0xe0
+unsigned char pchMessageStart[4] = { 0xfc, 0xfe, 0xf7, 0xe0 }; // 'N'+0xb0, 'L'+0xb0, 'G'+0xb0, 0xe0 (e for "echt", testnet has 0x00 as last byte)
 
 
 void static ProcessGetData(CNode* pfrom)
