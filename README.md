@@ -7,7 +7,7 @@ Starting April 4th 2014, we are bringing it back in a digital form, the Guldenco
 
 Specifications
 
- - Algorithm: scrypt PoW KGW
+ - Algorithm: scrypt PoW DIGI
  - Transaction confirmations: 6
  - Total coins: 1680M
  - Premine: 170M (+/- 10%)
