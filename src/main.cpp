@@ -1448,6 +1448,7 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
         if (DiffMode == 1) { return GetNextWorkRequired_original(pindexLast, pblock); }
         else if (DiffMode == 2) { return GetNextWorkRequired_KGW(pindexLast, pblock); }
         else if (DiffMode == 3) { return GetNextWorkRequired_DGW3(pindexLast, pblock); }
+        else if (DiffMode == 4) { return GetNextWorkRequired_DIGI(pindexLast, pblock); }
         return GetNextWorkRequired_DGW3(pindexLast, pblock);
 }
 //
