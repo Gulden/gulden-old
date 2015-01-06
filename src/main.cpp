@@ -1097,8 +1097,8 @@ unsigned int ComputeMinWork(unsigned int nBase, int64 nTime)
     bnResult.SetCompact(nBase);
     while (nTime > 0 && bnResult < bnProofOfWorkLimit)
     {
-        // Maximum 25% adjustment...
-        bnResult = (bnResult * 125) / 100;
+        // Maximum 400% adjustment...
+        bnResult *= 4;
         // ... in best-case exactly 4-times-normal target time
         nTime -= nTargetTimespan*4;
     }
@@ -1408,8 +1408,6 @@ unsigned int static GetNextWorkRequired_DIGI(const CBlockIndex* pindexLast, cons
     bnNew.SetCompact(pindexLast->nBits);
 
     //DigiShield implementation - thanks to RealSolid & WDC for this code
-    // amplitude filter - thanks to daft27 for this code
-    nActualTimespan = retargetTimespan + (nActualTimespan - retargetTimespan)/8;
     printf("DIGISHIELD RETARGET\n");
     if (nActualTimespan < (retargetTimespan - (retargetTimespan/4)) ) nActualTimespan = (retargetTimespan - (retargetTimespan/4));
     if (nActualTimespan > (retargetTimespan + (retargetTimespan/2)) ) nActualTimespan = (retargetTimespan + (retargetTimespan/2));
@@ -1449,7 +1447,7 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
         else if (DiffMode == 2) { return GetNextWorkRequired_KGW(pindexLast, pblock); }
         else if (DiffMode == 3) { return GetNextWorkRequired_DGW3(pindexLast, pblock); }
         else if (DiffMode == 4) { return GetNextWorkRequired_DIGI(pindexLast, pblock); }
-        return GetNextWorkRequired_DGW3(pindexLast, pblock);
+        return GetNextWorkRequired_DIGI(pindexLast, pblock);
 }
 //
 
