@@ -1078,7 +1078,6 @@ int64 static GetBlockValue(int nHeight, int64 nFees)
 }
 
 static const int64 nTargetTimespan = 3.5 * 24 * 60 * 60; // Guldencoin: 3.5 days
-static const int64 nTargetTimespanNEW = 2.5 * 60;
 static const int64 nTargetSpacing = 2.5 * 60; // Guldencoin: 2.5 minutes
 static const int64 nInterval = nTargetTimespan / nTargetSpacing;
 
@@ -1349,84 +1348,43 @@ unsigned int static GetNextWorkRequired_DGW3(const CBlockIndex* pindexLast, cons
     return DarkGravityWave3(pindexLast, pblock);
 }
 
+// Digi algorithm should never be used until at least 2 blocks are mined.
+// Contains code by RealSolid & WDC
+// Cleaned up for use in Guldencoin by GeertJohan (dead code removal since Guldencoin retargets every block)
 unsigned int static GetNextWorkRequired_DIGI(const CBlockIndex* pindexLast, const CBlockHeader *pblock){
+    // retarget timespan is set to a single block spacing because there is a retarget every block
+    int64 retargetTimespan = nTargetSpacing;
 
-    unsigned int nProofOfWorkLimit = bnProofOfWorkLimit.GetCompact();
-    int nHeight = pindexLast->nHeight + 1;
+    // get previous block
+    const CBlockIndex* pindexPrev = pindexLast->pprev;
+    assert(pindexPrev);
 
-    int64 retargetTimespan = nTargetTimespan;
-    int64 retargetSpacing = nTargetSpacing;
-    int64 retargetInterval = nInterval;
+    // calculate actual timestpan between last block and previous block
+    int64 nActualTimespan = pindexLast->GetBlockTime() - pindexPrev->GetBlockTime();
+    printf("Digishield retarget\n");
+    printf("nActualTimespan = %"PRI64d" before bounds\n", nActualTimespan);
 
-    retargetInterval = nTargetTimespanNEW / nTargetSpacing;
-    retargetTimespan = nTargetTimespanNEW;
-
-    // Genesis block
-    if (pindexLast == NULL)
-        return nProofOfWorkLimit;
-
-    // Only change once per interval
-    if ((pindexLast->nHeight+1) % retargetInterval != 0)
-    {
-        // Special difficulty rule for testnet:
-        if (fTestNet)
-        {
-            // If the new block's timestamp is more than 2* nTargetSpacing minutes
-            // then allow mining of a min-difficulty block.
-            if (pblock->nTime > pindexLast->nTime + retargetSpacing*3)
-                return nProofOfWorkLimit;
-            else
-            {
-                // Return the last non-special-min-difficulty-rules-block
-                const CBlockIndex* pindex = pindexLast;
-                while (pindex->pprev && pindex->nHeight % retargetInterval != 0 && pindex->nBits == nProofOfWorkLimit)
-                    pindex = pindex->pprev;
-                return pindex->nBits;
-            }
-        }
-
-        return pindexLast->nBits;
-    }
-
-    // This fixes an issue where a 51% attack can change difficulty at will.
-    // Go back the full period unless it's the first retarget after genesis. Code courtesy of Art Forz
-    int blockstogoback = retargetInterval-1;
-    if ((pindexLast->nHeight+1) != retargetInterval)
-        blockstogoback = retargetInterval;
-
-    // Go back by what we want to be 14 days worth of blocks
-    const CBlockIndex* pindexFirst = pindexLast;
-    for (int i = 0; pindexFirst && i < blockstogoback; i++)
-        pindexFirst = pindexFirst->pprev;
-    assert(pindexFirst);
-
-    // Limit adjustment step
-    int64 nActualTimespan = pindexLast->GetBlockTime() - pindexFirst->GetBlockTime();
-    printf(" nActualTimespan = %"PRI64d" before bounds\n", nActualTimespan);
-
-    CBigNum bnNew;
-    bnNew.SetCompact(pindexLast->nBits);
-
-    //DigiShield implementation - thanks to RealSolid & WDC for this code
-    printf("DIGISHIELD RETARGET\n");
+    // limit difficulty changes between 50% and 125% (human view)
     if (nActualTimespan < (retargetTimespan - (retargetTimespan/4)) ) nActualTimespan = (retargetTimespan - (retargetTimespan/4));
     if (nActualTimespan > (retargetTimespan + (retargetTimespan/2)) ) nActualTimespan = (retargetTimespan + (retargetTimespan/2));
-    // Retarget
 
+    // calculate new difficulty
+    CBigNum bnNew;
+    bnNew.SetCompact(pindexLast->nBits);
     bnNew *= nActualTimespan;
     bnNew /= retargetTimespan;
 
+    // difficulty should never go below (human view) the starting difficulty
     if (bnNew > bnProofOfWorkLimit)
         bnNew = bnProofOfWorkLimit;
 
     /// debug print
-    printf("GetNextWorkRequired RETARGET\n");
     printf("nTargetTimespan = %"PRI64d" nActualTimespan = %"PRI64d"\n" , retargetTimespan, nActualTimespan);
     printf("Before: %08x %s\n", pindexLast->nBits, CBigNum().SetCompact(pindexLast->nBits).getuint256().ToString().c_str());
     printf("After: %08x %s\n", bnNew.GetCompact(), bnNew.getuint256().ToString().c_str());
 
+    // return compact (uint) difficulty
     return bnNew.GetCompact();
-
 }
 
 
