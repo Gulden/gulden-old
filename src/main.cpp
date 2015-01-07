@@ -1392,13 +1392,14 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
 {
         int DiffMode = 1;
         if (fTestNet) {
-                if (pindexLast->nHeight+1 >= 15) { DiffMode = 3; }
+                if (pindexLast->nHeight+1 >= 30) { DiffMode = 4; }
+                else if (pindexLast->nHeight+1 >= 15) { DiffMode = 3; }
                 else if (pindexLast->nHeight+1 >= 5) { DiffMode = 2; }
         }
         else {
-        	if (pindexLast->nHeight+1 >= 180000) { DiffMode = 4; }
-                else if (pindexLast->nHeight+1 >= 123793) { DiffMode = 3; }
-                else if (pindexLast->nHeight+1 >= 10) { DiffMode = 2; } // KGW will kick in at block 10, so pretty much direct from start.
+        	if (pindexLast->nHeight+1 >= 194300) { DiffMode = 4; }
+            else if (pindexLast->nHeight+1 >= 123793) { DiffMode = 3; }
+            else if (pindexLast->nHeight+1 >= 10) { DiffMode = 2; } // KGW will kick in at block 10, so pretty much direct from start.
         }
         
         if (DiffMode == 1) { return GetNextWorkRequired_original(pindexLast, pblock); }
