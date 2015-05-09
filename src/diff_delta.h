@@ -279,8 +279,13 @@ unsigned int static GetNextWorkRequired_Delta(const CBlockIndex* pindexLast, con
     // Exception 2 - Reduce difficulty if current block generation time has already exceeded maximum time limit. (NB! nLongTimeLimit must exceed maximum possible drift in both positive and negative direction)
     if ((pblock->nTime - pindexLast->GetBlockTime()) > nLongTimeLimit)
     {
-        int64_t nNumMissedSteps = (pblock->nTime - pindexLast->GetBlockTime()) / nLongTimeStep;
-        bnNew *=  (int64_t)std::pow(2, nNumMissedSteps - 1);
+        // Reduce in a linear fashion at first, and then start to ramp up with a gradual exponential curve (to catch massive hash extinction events)
+        int64_t nNumMissedSteps = ((pblock->nTime - pindexLast->GetBlockTime()) / nLongTimeStep);
+        if (nNumMissedSteps <= 12)
+            bnNew *=  nNumMissedSteps;
+        else
+            bnNew *=  12 + (int64_t)std::floor(std::pow(1.14, nNumMissedSteps - 12) + 0.5);
+	
         if (fDebug && (nPrevHeight != pindexLast->nHeight ||  bnNew.GetCompact() != nPrevDifficulty) )
             sLogInfo +=  strprintf("<DELTA> Maximum block time hit - halving difficulty %08x %s\n", bnNew.GetCompact(), bnNew.ToString().c_str());
     }
@@ -303,7 +308,7 @@ unsigned int static GetNextWorkRequired_Delta(const CBlockIndex* pindexLast, con
             printf("<DELTA> nShortTimespan/nShortFrame = %ld nMiddleTimespan/nMiddleFrame = %ld nLongTimespan/nLongFrame = %ld \n", nShortTimespan/nShortFrame, nMiddleTimespan/nMiddleFrame, nLongTimespan/nLongFrame);
             printf("<DELTA> Before: %08x %s\n", pindexLast->nBits, CBigNum().SetCompact(pindexLast->nBits).ToString().c_str());
             printf("<DELTA> After:  %08x %s\n", bnNew.GetCompact(), bnNew.ToString().c_str());
-            printf("<DELTA> Rough change percentage (human view): %ld%%\n", -( ( (bnNew.getulong() - CBigNum().SetCompact(pindexLast->nBits).getulong()) / CBigNum().SetCompact(pindexLast->nBits).getulong()) * 100) );
+            printf("<DELTA> Rough change percentage (human view): %lf%%\n", -( ( (bnNew.getuint256().getdouble() - CBigNum().SetCompact(pindexLast->nBits).getuint256().getdouble()) / CBigNum().SetCompact(pindexLast->nBits).getuint256().getdouble()) * 100) );
         }
         nPrevHeight = pindexLast->nHeight;
         nPrevDifficulty = bnNew.GetCompact();
