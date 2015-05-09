@@ -279,7 +279,8 @@ unsigned int static GetNextWorkRequired_Delta(const CBlockIndex* pindexLast, con
     // Exception 2 - Reduce difficulty if current block generation time has already exceeded maximum time limit. (NB! nLongTimeLimit must exceed maximum possible drift in both positive and negative direction)
     if ((pblock->nTime - pindexLast->GetBlockTime()) > nLongTimeLimit)
     {
-        bnNew *= (pblock->nTime - pindexLast->GetBlockTime()) / nLongTimeStep ;
+        int64_t nNumMissedSteps = (pblock->nTime - pindexLast->GetBlockTime()) / nLongTimeStep;
+        bnNew *=  (int64_t)std::pow(2, nNumMissedSteps - 1);
         if (fDebug && (nPrevHeight != pindexLast->nHeight ||  bnNew.GetCompact() != nPrevDifficulty) )
             sLogInfo +=  strprintf("<DELTA> Maximum block time hit - halving difficulty %08x %s\n", bnNew.GetCompact(), bnNew.ToString().c_str());
     }
