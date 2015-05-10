@@ -1390,7 +1390,7 @@ unsigned int static GetNextWorkRequired_DIGI(const CBlockIndex* pindexLast, cons
 #include "diff_delta.h"
 unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
 {
-	static int nDeltaSwitchover = fTestNet ? 100 : 212576;
+	static int nDeltaSwitchover = fTestNet ? 100 : 213500;
         int DiffMode = 1;
         if (fTestNet) {
                 if (pindexLast->nHeight+1 >= nDeltaSwitchover) { DiffMode = 5; }
