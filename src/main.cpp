@@ -1387,17 +1387,20 @@ unsigned int static GetNextWorkRequired_DIGI(const CBlockIndex* pindexLast, cons
     return bnNew.GetCompact();
 }
 
-
+#include "diff_delta.h"
 unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
 {
+	static int nDeltaSwitchover = fTestNet ? 100 : 213500;
         int DiffMode = 1;
         if (fTestNet) {
-                if (pindexLast->nHeight+1 >= 30) { DiffMode = 4; }
+                if (pindexLast->nHeight+1 >= nDeltaSwitchover) { DiffMode = 5; }
+                else if (pindexLast->nHeight+1 >= 30) { DiffMode = 4; }
                 else if (pindexLast->nHeight+1 >= 15) { DiffMode = 3; }
                 else if (pindexLast->nHeight+1 >= 5) { DiffMode = 2; }
         }
         else {
-        	if (pindexLast->nHeight+1 >= 194300) { DiffMode = 4; }
+            if (pindexLast->nHeight+1 >= nDeltaSwitchover) { DiffMode = 5; }
+            else if (pindexLast->nHeight+1 >= 194300) { DiffMode = 4; }
             else if (pindexLast->nHeight+1 >= 123793) { DiffMode = 3; }
             else if (pindexLast->nHeight+1 >= 10) { DiffMode = 2; } // KGW will kick in at block 10, so pretty much direct from start.
         }
@@ -1406,7 +1409,8 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
         else if (DiffMode == 2) { return GetNextWorkRequired_KGW(pindexLast, pblock); }
         else if (DiffMode == 3) { return GetNextWorkRequired_DGW3(pindexLast, pblock); }
         else if (DiffMode == 4) { return GetNextWorkRequired_DIGI(pindexLast, pblock); }
-        return GetNextWorkRequired_DIGI(pindexLast, pblock);
+        else if (DiffMode == 5) { return GetNextWorkRequired_Delta(pindexLast, pblock, nDeltaSwitchover); }
+        return GetNextWorkRequired_Delta(pindexLast, pblock, nDeltaSwitchover);
 }
 //
 
@@ -2340,7 +2344,7 @@ bool CBlock::CheckBlock(CValidationState &state, bool fCheckPOW, bool fCheckMerk
         return state.DoS(50, error("CheckBlock() : proof of work failed"));
 
     // Check timestamp
-    if (GetBlockTime() > GetAdjustedTime() + 2 * 60 * 60)
+    if (GetBlockTime() > GetAdjustedTime() + 15 * 60)
         return state.Invalid(error("CheckBlock() : block timestamp too far in the future"));
 
     // First transaction must be coinbase, the rest must not be
