@@ -73,7 +73,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent) :
     restoreWindowGeometry();
     setWindowTitle(tr("Guldencoin") + " - " + tr("Wallet"));
     qApp->setStyleSheet(
-                "#frame_coinamount { background:rgb(0,51,102); color: white; border: none; } " \
+                "#frame_coinamount { background:rgb(9,57,153); color: white; border: none; } " \
                 "#frame_coinamount QLabel { color: #ffffff; } " \
                 "#frame { } QToolBar QLabel { padding-top:15px;padding-bottom:10px;margin:0px; border: 0px;  border-color: yellow;} "
     );
