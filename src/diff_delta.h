@@ -28,14 +28,14 @@ unsigned int static GetNextWorkRequired_Delta(const CBlockIndex* pindexLast, con
     const unsigned int nProofOfWorkLimit = bnProofOfWorkLimit.GetCompact();
 
     // How many blocks to use to calculate each of the four algo specific time windows (last block; short window; middle window; long window)
-    const int nLastBlock           =   1;
-    const int nShortFrame          =   3;
-    const int nMiddleFrame         =  24;
-    const int nLongFrame           = 576;
+    const unsigned int nLastBlock           =   1;
+    const unsigned int nShortFrame          =   3;
+    const unsigned int nMiddleFrame         =  24;
+    const unsigned int nLongFrame           = 576;
 
     // How many blocks to use for the fifth window, fifth window is across all algorithms.
     #ifdef MULTI_ALGO
-    const int nDayFrame            = 576;
+    const unsigned int nDayFrame            = 576;
     #endif
 
     // Weighting to use for each of the four algo specific time windows.
@@ -123,7 +123,7 @@ unsigned int static GetNextWorkRequired_Delta(const CBlockIndex* pindexLast, con
 
     // -- Calculate timespan for short window (multi algo - this is calculated on a per algo basis)
     pindexFirst = pindexLast;
-    for (int i = 1; pindexFirst && i <= nQBFrame; i++)
+    for (unsigned int i = 1; pindexFirst && i <= nQBFrame; i++)
     {
         nDeltaTimespan = pindexFirst->GetBlockTime() - pindexFirst->pprev->GetBlockTime();
         // Prevent bad/negative block times - switch them for a fixed time.
@@ -144,7 +144,7 @@ unsigned int static GetNextWorkRequired_Delta(const CBlockIndex* pindexLast, con
     else
     {
         pindexFirst = pindexLast;
-        for (int i = 1; pindexFirst && i <= nMiddleFrame; i++)
+        for (unsigned int i = 1; pindexFirst && i <= nMiddleFrame; i++)
         {
             nDeltaTimespan = pindexFirst->GetBlockTime() - pindexFirst->pprev->GetBlockTime();
             // Prevent bad/negative block times - switch them for a fixed time.
@@ -166,7 +166,7 @@ unsigned int static GetNextWorkRequired_Delta(const CBlockIndex* pindexLast, con
     else
     {
         pindexFirst = pindexLast;
-        for (int i = 1; pindexFirst && i <= nLongFrame; i++)
+        for (unsigned int i = 1; pindexFirst && i <= nLongFrame; i++)
             pindexFirst = pindexFirst->pprev;
 
         nLongTimespan = pindexLast->GetBlockTime() - pindexFirst->GetBlockTime();
@@ -265,13 +265,13 @@ unsigned int static GetNextWorkRequired_Delta(const CBlockIndex* pindexLast, con
             bnNew *= 95;
             bnNew /= PERCENT_FACTOR;
             if (fDebug && (nPrevHeight != pindexLast->nHeight) )
-                sLogInfo +=  strprintf("<DELTA> Last block time [%ld] was far below target but adjustment still downward, forcing difficulty up by 5%% instead\n", nLBTimespan);
+                sLogInfo +=  strprintf("<DELTA> Last block time [%ld] was far below target but adjustment still downward, forcing difficulty up by 5%% instead\n", (long int)nLBTimespan);
         }
         else
         {
             bnNew.SetCompact(pindexLast->nBits);
             if (fDebug && (nPrevHeight != pindexLast->nHeight) )
-                sLogInfo += strprintf("<DELTA> Last block time [%ld] below target but adjustment still downward, blocking downward adjustment\n", nLBTimespan);
+                sLogInfo += strprintf("<DELTA> Last block time [%ld] below target but adjustment still downward, blocking downward adjustment\n", (long int)nLBTimespan);
         }
     }
 
@@ -304,8 +304,8 @@ unsigned int static GetNextWorkRequired_Delta(const CBlockIndex* pindexLast, con
 	    LOCK(logCS);
             printf("<DELTA> Height= %d\n" , pindexLast->nHeight);
 	    printf("%s" , sLogInfo.c_str());
-            printf("<DELTA> nTargetTimespan = %ld nActualTimespan = %ld nWeightedTimespan = %ld \n", nRetargetTimespan, nLBTimespan, nWeightedTimespan);
-            printf("<DELTA> nShortTimespan/nShortFrame = %ld nMiddleTimespan/nMiddleFrame = %ld nLongTimespan/nLongFrame = %ld \n", nShortTimespan/nShortFrame, nMiddleTimespan/nMiddleFrame, nLongTimespan/nLongFrame);
+            printf("<DELTA> nTargetTimespan = %ld nActualTimespan = %ld nWeightedTimespan = %ld \n", (long int)nRetargetTimespan, (long int)nLBTimespan, (long int)nWeightedTimespan);
+            printf("<DELTA> nShortTimespan/nShortFrame = %ld nMiddleTimespan/nMiddleFrame = %ld nLongTimespan/nLongFrame = %ld \n", (long int)(nShortTimespan/nShortFrame), (long int)(nMiddleTimespan/nMiddleFrame), (long int)(nLongTimespan/nLongFrame));
             printf("<DELTA> Before: %08x %s\n", pindexLast->nBits, CBigNum().SetCompact(pindexLast->nBits).ToString().c_str());
             printf("<DELTA> After:  %08x %s\n", bnNew.GetCompact(), bnNew.ToString().c_str());
             printf("<DELTA> Rough change percentage (human view): %lf%%\n", -( ( (bnNew.getuint256().getdouble() - CBigNum().SetCompact(pindexLast->nBits).getuint256().getdouble()) / CBigNum().SetCompact(pindexLast->nBits).getuint256().getdouble()) * 100) );
